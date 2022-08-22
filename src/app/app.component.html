@@ -1,23 +1,107 @@
-<input type="number" #variable />
-<button (click)="tets(variable.value)">crear</button>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="mb-3 row">
+        <label for="numeroVertices" class="col-sm-5 col-form-label">Número de vertices</label>
+        <div class="col-sm-7">
+          <input class="form-control" type="number" #variable id="numeroVertices" />
+        </div>
+      </div>
+      
+    </div>
+    <div class="col">
+      <button class="btn btn-primary" (click)="tets(variable.value)">crear</button>
+    </div>
+  </div>
 
-<table class="default" >
+  <div class="row">
+    <table class="table table-striped" [formGroup]="matrixVertices" *ngIf="sw">
 
-  <tr>
+      <thead>
+        <th scope scope="col">#</th>
+        <th scope="col" *ngFor="let vertice of vertices">V{{vertice}}</th>
+      </thead>
 
-    <th scope="row"></th>
+      <tbody>
+        <ng-container *ngFor="let verticesFila of vertices">
+          <tr scope="row" [formGroupName]="verticesFila">
+            <th>V{{verticesFila}}</th>
+            <td *ngFor="let vertice of vertices">
 
-    <th *ngFor="let vertice of vertices">V{{vertice}}</th>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" [formControlName]="vertice">
+              </div>
+
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="row text-end" *ngIf="sw" >
+    <div class="col ">
+      <button  class="btn btn-primary m-1" (click)="openModalMatrizAdyacencia(content)">Representación Matricial</button>
+    </div>
+    
+  </div>
+
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title">Representación Matricial</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+  </div>
+  <div class="modal-body">
+
+    <h3>Matriz de Adyacencia</h3>
+    <table class="table table-striped">
+      <thead>
+        <th scope scope="col">#</th>
+        <th scope="col" *ngFor="let vertice of vertices">V{{vertice}}</th>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let verticesFila of vertices">
+          <tr scope="row" >
+            <th>V{{verticesFila}}</th>
+            <td *ngFor="let vertice of vertices">
+
+              {{matrizAdyacencia[verticesFila-1][vertice-1]}}
+
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <h3>Matriz de Incidencia</h3>
+    <table class="table table-striped">
+      <thead>
+        <th scope scope="col">#</th>
+        <th scope="col" *ngFor="let lado of numeroLados">L{{lado}}</th>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let verticesFila of vertices">
+          <tr scope="row" >
+            <th>V{{verticesFila}}</th>
+            <td *ngFor="let lado of numeroLados">
+
+              {{matrizIncidencia[verticesFila-1][lado-1]}}
+
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Cerrar</button>
+  </div>
+</ng-template>
 
 
-  </tr>
-
-  <tr *ngFor="let vertice of vertices">
-
-    <th>V{{vertice}}</th>
-
-    <td *ngFor="let vertice of vertices"><ng-select [items]="cars" bindLabel="name" bindValue="id" >
-    </ng-select></td>
-  </tr>
-
-</table>
+<div *ngIf="isComplete">
+  El grafo es completo
+</div>

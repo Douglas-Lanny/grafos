@@ -11,6 +11,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class AppComponent implements OnInit {
 
   sw = false;
+  sw2 = false;
 
   vertices: any[] = [];
 
@@ -22,7 +23,8 @@ export class AppComponent implements OnInit {
 
   numeroLados: any[] = [];
 
-  isComplete = false;
+  clasificacion = {isEuler: false, isComplete: false, isRegular: false};
+
 
 
   constructor(private fb: FormBuilder, private modalService: NgbModal) {
@@ -60,9 +62,7 @@ export class AppComponent implements OnInit {
     return verticeForm;
   }
 
-  test2() {
-    this.getGradoGrafo();
-  }
+
 
   changeGrafo() {
     this.vertices.forEach(
@@ -84,26 +84,6 @@ export class AppComponent implements OnInit {
 
 
 
-  getGradoGrafo() {
-
-    let n = this.vertices.length;
-
-    let contador = 0;
-
-    this.vertices.forEach(
-      x => {
-        this.vertices.forEach(y => {
-          contador = this.matrixVertices.get(`${x}`)?.get(`${y}`)?.value ? contador + 1 : contador;
-        })
-      }
-    );
-
-    console.log(contador);
-
-    this.isComplete = n * (n - 1) === contador;
-
-
-  }
 
   openModalMatrizAdyacencia(content: any) {
 
@@ -140,7 +120,7 @@ export class AppComponent implements OnInit {
       this.vertices.forEach(y => {
         if (y > x) {
           let value = this.matrixVertices.get(`${x}`)?.get(`${y}`)?.value;
-          if (value === true) {
+          if (value) {
             lados.push([x, y]);
             contadorLados = contadorLados + 1;
             this.numeroLados.push(contadorLados);
@@ -162,6 +142,78 @@ export class AppComponent implements OnInit {
     });
 
 
+
+  }
+
+  isEuler(grados: any[]) {
+    let value = true
+    let i = 0;
+    const n = grados.length;
+    do {
+
+      value = grados[i] % 2 === 0;
+
+      i++;
+
+    } while (i < n && value)
+
+    return value;
+  }
+
+  isComplete(grados: any[]) {
+    let acumulador = 0;
+
+    const n = grados.length;
+
+    grados.forEach(x => { acumulador = acumulador + x });
+
+    return n * (n - 1) === acumulador;
+  }
+
+  isRegular(grados: any[]) {
+    let n = grados.length;
+
+    let value = true;
+
+    let i = 0;
+
+    do {
+
+      value = grados[i] === grados[i + 1];
+      i++
+
+    } while (i < n - 1 && value);
+
+    return value;
+
+  }
+
+  setGradeGraf() {
+    let grados: any[] = [];
+
+    this.vertices.forEach(x => {
+      let acumulador = 0;
+      this.vertices.forEach(y => {
+        let value = this.matrixVertices.get(`${x}`)?.get(`${y}`)?.value ? 1 : 0;
+
+        acumulador = acumulador + value;
+      });
+      grados.push(acumulador);
+    });
+
+    return grados;
+  }
+
+  caracteristica(){
+
+    const grados = this.setGradeGraf();
+
+    const isEuler = this.isEuler(grados);
+    const isComplete = this.isComplete(grados);
+    const isRegular = this.isRegular(grados);
+
+    this.clasificacion = {isEuler, isComplete, isRegular};
+    this.sw2 = true;
 
   }
 

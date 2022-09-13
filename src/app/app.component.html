@@ -41,6 +41,7 @@
 
   <div class="row text-end" *ngIf="sw" >
     <div class="col ">
+      <button  class="btn btn-primary m-1" (click)="caracteristica()">Clasificación</button>
       <button  class="btn btn-primary m-1" (click)="openModalMatrizAdyacencia(content)">Representación Matricial</button>
     </div>
     
@@ -80,7 +81,7 @@
       <thead>
         <th scope scope="col">#</th>
         <th scope="col" *ngFor="let lado of numeroLados">L{{lado}}</th>
-      </thead>
+      </thead> 
       <tbody>
         <ng-container *ngFor="let verticesFila of vertices">
           <tr scope="row" >
@@ -101,7 +102,8 @@
   </div>
 </ng-template>
 
-
-<div *ngIf="isComplete">
-  El grafo es completo
+<div class="container"  *ngIf="sw2">
+  Es completo : {{clasificacion.isComplete ? 'Si': 'No'}} <br/>
+  Es Euleriano : {{clasificacion.isEuler ? 'Si': 'No'}} <br/>
+  Es Reuglar: {{clasificacion.isRegular ? 'Si': 'No'}} <br/>
 </div>
